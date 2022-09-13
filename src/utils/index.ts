@@ -4,7 +4,7 @@ import { Contract } from '@ethersproject/contracts';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
-import { blockClient, client, txClient } from 'apollo/client';
+import { blockClient, client, cntFarmClient, txClient } from 'apollo/client';
 import {
   GET_BLOCK,
   GLOBAL_DATA,
@@ -31,6 +31,7 @@ import {
   GLOBAL_ALLDATA,
   ETH_PRICE,
   PAIR_ID,
+  CNT_FARMS,
 } from 'apollo/queries';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import {
@@ -2168,4 +2169,82 @@ export function getSyrupLPToken(info: SyrupBasic | SyrupInfo) {
 export function getCallStateResult(callState?: CallState) {
   if (callState && callState.result) return callState.result[0];
   return;
+}
+
+export async function getAllCntFarms() {
+  try {
+    // let allFound = false;
+
+    const currentDate = Math.floor(new Date().getTime() / 1000);
+    // let skipCount = 0;
+    const result = await cntFarmClient.query({
+      query: CNT_FARMS,
+
+      fetchPolicy: 'network-only',
+    });
+
+    console.log('cnt-farm result ', result?.data);
+
+    // const upcomming:any = [];
+    let active = result?.data?.rewardPools?.filter((farm: any) => {
+      return (
+        farm?.farm?.periodFinish &&
+        currentDate > Number(farm?.farm.periodFinish)
+      );
+    });
+    // format farm objects
+    active = active?.map((farm: any) => {
+      return {
+        tokens: [farm?.farm?.token0Address, farm?.farm?.token1Address],
+        stakingRewardAddress: farm?.farm?.id, // farm address
+        pair: farm?.farm?.inputToken,
+        ended: false,
+        lp: '',
+        name: '',
+        baseToken: '',
+        rate: farm?.rewardRate,
+        rewardToken: farm?.rewardToken,
+        rewardAmount: farm?.rewardAmount,
+        rewardTokenURL: farm?.rewardTokenURL,
+        rewardTokenName: farm?.rewardTokenName,
+        rewardTokenSymbol: farm?.rewardTokenSymbol,
+        rewardTokenDecimals: farm?.rewardTokenDecimals,
+      };
+    });
+    let upcommint = result?.data?.rewardPools?.filter((farm: any) => {
+      return (
+        farm?.farm?.periodFinish &&
+        currentDate < Number(farm?.farm?.periodFinish)
+      );
+    });
+    upcommint = upcommint?.map((farm: any) => {
+      return {
+        tokens: [farm?.farm?.token0Address, farm?.farm?.token1Address],
+        stakingRewardAddress: farm?.farm?.id, // farm address
+        pair: farm?.farm?.inputToken,
+        ended: false,
+        lp: '',
+        name: '',
+        baseToken: '',
+        rate: farm?.rewardRate,
+        rewardToken: farm?.rewardToken,
+        rewardAmount: farm?.rewardAmount,
+        rewardTokenURL: farm?.rewardTokenURL,
+        rewardTokenName: farm?.rewardTokenName,
+        rewardTokenSymbol: farm?.rewardTokenSymbol,
+        rewardTokenDecimals: farm?.rewardTokenDecimals,
+      };
+    });
+
+    return {
+      name: 'CNT Farns',
+      logoUri: '',
+      active: upcommint,
+      upcommint,
+      ended: upcommint,
+    };
+  } catch (e) {
+    console.log('cnt-farm error', e);
+    console.log(e);
+  }
 }

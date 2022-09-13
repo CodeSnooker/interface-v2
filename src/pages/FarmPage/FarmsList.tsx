@@ -71,6 +71,16 @@ const FarmsList: React.FC<FarmsListProps> = ({ bulkPairs, farmIndex }) => {
       : undefined,
     { search: farmSearch, isStaked: stakedOnly },
   );
+
+  const addedCNTStakingInfos = useStakingInfo(
+    chainIdOrDefault,
+    null,
+    farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX ? 0 : undefined,
+    farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX ? 0 : undefined,
+    { search: farmSearch, isStaked: stakedOnly },
+  );
+
+  console.log('addedCNTStakingInfos ', { addedCNTStakingInfos, farmIndex });
   const addedLPStakingOldInfos = useOldStakingInfo(
     chainIdOrDefault,
     null,
@@ -215,6 +225,33 @@ const FarmsList: React.FC<FarmsListProps> = ({ bulkPairs, farmIndex }) => {
     sortByEarnedLP,
   ]);
 
+  const sortedCNTStakingInfos = useMemo(() => {
+    const cntLpStakingInfos = addedCNTStakingInfos;
+    return cntLpStakingInfos.sort((a, b) => {
+      if (sortBy === POOL_COLUMN) {
+        return sortByToken(a, b);
+      } else if (sortBy === TVL_COLUMN) {
+        return sortByTVL(a, b);
+      } else if (sortBy === REWARDS_COLUMN) {
+        return sortByRewardLP(a, b);
+      } else if (sortBy === APY_COLUMN) {
+        return sortByAPY(a, b);
+      } else if (sortBy === EARNED_COLUMN) {
+        return sortByEarnedLP(a, b);
+      }
+      return 1;
+    });
+  }, [
+    sortBy,
+    addedCNTStakingInfos,
+    isEndedFarm,
+    sortByToken,
+    sortByTVL,
+    sortByRewardLP,
+    sortByAPY,
+    sortByEarnedLP,
+  ]);
+
   const sortedStakingDualInfos = useMemo(() => {
     const dualStakingInfos = addedDualStakingInfos.filter(
       (info) => info.ended === isEndedFarm,
@@ -258,6 +295,20 @@ const FarmsList: React.FC<FarmsListProps> = ({ bulkPairs, farmIndex }) => {
         .reduce((totStr, str) => totStr + str, '')
     : null;
 
+  const addedCntStakingInfos = useMemo(
+    () =>
+      farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX
+        ? sortedCNTStakingInfos
+        : sortedCNTStakingInfos,
+    [farmIndex, sortedCNTStakingInfos, sortedLPStakingInfos],
+  );
+
+  const cntStakingRewardAddress = addedCntStakingInfos
+    ? addedCntStakingInfos
+        .map((stakingInfo) => stakingInfo.stakingRewardAddress.toLowerCase())
+        .reduce((totStr, str) => totStr + str, '')
+    : null;
+
   useEffect(() => {
     setPageIndex(0);
   }, [stakingRewardAddress, farmIndex]);
@@ -270,6 +321,7 @@ const FarmsList: React.FC<FarmsListProps> = ({ bulkPairs, farmIndex }) => {
         )
       : null;
   }, [sortedLPStakingInfos, pageIndex]);
+  //
 
   const stakingDualInfos = useMemo(() => {
     return sortedStakingDualInfos
@@ -365,13 +417,19 @@ const FarmsList: React.FC<FarmsListProps> = ({ bulkPairs, farmIndex }) => {
     <>
       <Box className='farmListHeader'>
         <Box>
-          <h5>{t('earndQUICK')}</h5>
+          <h5>
+            {' '}
+            {farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX
+              ? t('Earn Rewards')
+              : t('earndQUICK')}
+          </h5>
           <small>
-            {t(
-              farmIndex === GlobalConst.farmIndex.LPFARM_INDEX
-                ? 'stakeMessageLP'
-                : 'stakeMessageDual',
-            )}
+            {farmIndex === GlobalConst.farmIndex.LPFARM_INDEX &&
+              t('stakeMessageLP')}
+            {farmIndex === GlobalConst.farmIndex.DUALFARM_INDEX &&
+              t('stakeMessageLP')}
+            {farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX &&
+              t('Other LP Farms')}
           </small>
         </Box>
         <Box className='flex flex-wrap'>
@@ -455,6 +513,16 @@ const FarmsList: React.FC<FarmsListProps> = ({ bulkPairs, farmIndex }) => {
               <Skeleton width='100%' height={100} />
             </>
           ))}
+      {farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX &&
+        addedCntStakingInfos &&
+        addedCntStakingInfos.map((info: StakingInfo, index) => (
+          <FarmCard
+            key={index}
+            stakingInfo={info}
+            stakingAPY={getPoolApy(info?.pair)}
+            isLPFarm={true}
+          />
+        ))}
       {farmIndex === GlobalConst.farmIndex.LPFARM_INDEX &&
         stakingInfos &&
         stakingInfos.map((info: StakingInfo, index) => (
@@ -474,6 +542,8 @@ const FarmsList: React.FC<FarmsListProps> = ({ bulkPairs, farmIndex }) => {
             stakingAPY={getPoolApy(info?.pair)}
           />
         ))}
+      {/* todo fix render cnt farms */}
+      {/* {farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX && sta} */}
       <div ref={loadMoreRef} />
     </>
   );

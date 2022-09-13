@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useDefaultFarmList } from 'state/farms/hooks';
 import { ChainId } from '@uniswap/sdk';
 
+// todo: fix reward page header for other lp
 const FarmRewards: React.FC<{ farmIndex: number; bulkPairs: any }> = ({
   farmIndex,
   bulkPairs,

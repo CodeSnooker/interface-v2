@@ -711,3 +711,36 @@ export const SWAP_TRANSACTIONS = gql`
     }
   }
 `;
+
+export const CNT_FARMS = gql`
+  query {
+    rewardPools {
+      id
+      rewardToken
+      rewardTokenURL
+      rewardTokenName
+      rewardTokenSymbol
+      rewardTokenDecimals
+      rewardRate
+      rewardsAmount
+      farm {
+        id
+        inputToken
+        inputTokenURL
+        inputTokenSymbol
+        inputTokenDecimals
+        totalInputTokensStaked
+        token0Name
+        token0Symbol
+        token0Address
+        token0Decimals
+        token1Name
+        token1Symbol
+        token1Address
+        token1Decimals
+        routerAddress
+        periodFinish
+      }
+    }
+  }
+`;

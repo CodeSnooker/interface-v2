@@ -12,6 +12,8 @@ import 'pages/styles/farm.scss';
 import { useDefaultFarmList } from 'state/farms/hooks';
 import { useDefaultDualFarmList } from 'state/dualfarms/hooks';
 import { ChainId } from '@uniswap/sdk';
+import CNTWallet from 'components/CNTWallet/CNTWallet';
+import { useDefaultCntFarmList } from 'state/cntfarms/hooks';
 
 const FarmPage: React.FC = () => {
   const { chainId } = useActiveWeb3React();
@@ -23,7 +25,11 @@ const FarmPage: React.FC = () => {
   const chainIdOrDefault = chainId ?? ChainId.MATIC;
   const lpFarms = useDefaultFarmList();
   const dualFarms = useDefaultDualFarmList();
+  const cntFarms = useDefaultCntFarmList();
 
+  // useEffect(() => {
+  //   console.log('farms states ', { lpFarms, dualFarms, cntFarms });
+  // }, [cntFarms, dualFarms, lpFarms]);
   const pairLists = useMemo(() => {
     const stakingPairLists = Object.values(lpFarms[chainIdOrDefault]).map(
       (item) => item.pair,
@@ -31,7 +37,11 @@ const FarmPage: React.FC = () => {
     const dualPairLists = Object.values(dualFarms[chainIdOrDefault]).map(
       (item) => item.pair,
     );
-    return stakingPairLists.concat(dualPairLists);
+    const cntPairLists = Object.values(cntFarms[chainIdOrDefault]).map(
+      (item) => item.pair,
+    );
+    const list = stakingPairLists.concat(dualPairLists);
+    return list.concat(cntPairLists);
   }, [chainIdOrDefault, lpFarms, dualFarms]);
 
   useEffect(() => {
@@ -43,6 +53,11 @@ const FarmPage: React.FC = () => {
       text: t('lpMining'),
       onClick: () => setFarmIndex(GlobalConst.farmIndex.LPFARM_INDEX),
       condition: farmIndex === GlobalConst.farmIndex.LPFARM_INDEX,
+    },
+    {
+      text: t('Other LP'),
+      onClick: () => setFarmIndex(GlobalConst.farmIndex.OTHER_LPFARM_INDEX),
+      condition: farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX,
     },
     {
       text: t('dualMining'),
@@ -62,12 +77,17 @@ const FarmPage: React.FC = () => {
           <HelpIcon />
         </Box>
       </Box>
-      <CustomSwitch
-        width={300}
-        height={48}
-        items={farmCategories}
-        isLarge={true}
-      />
+      <Box className='flex flex-wrap justify-between items-center'>
+        <CustomSwitch
+          width={350}
+          height={48}
+          items={farmCategories}
+          isLarge={true}
+        />
+        {farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX && (
+          <CNTWallet />
+        )}
+      </Box>
       <Box my={2}>
         <FarmRewards bulkPairs={bulkPairs} farmIndex={farmIndex} />
       </Box>
