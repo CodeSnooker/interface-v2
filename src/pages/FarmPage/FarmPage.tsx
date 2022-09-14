@@ -25,7 +25,7 @@ const FarmPage: React.FC = () => {
   const chainIdOrDefault = chainId ?? ChainId.MATIC;
   const lpFarms = useDefaultFarmList();
   const dualFarms = useDefaultDualFarmList();
-  const cntFarms = useDefaultCntFarmList();
+  // const cntFarms = useDefaultCntFarmList();
 
   // useEffect(() => {
   //   console.log('farms states ', { lpFarms, dualFarms, cntFarms });
@@ -37,11 +37,12 @@ const FarmPage: React.FC = () => {
     const dualPairLists = Object.values(dualFarms[chainIdOrDefault]).map(
       (item) => item.pair,
     );
-    const cntPairLists = Object.values(cntFarms[chainIdOrDefault]).map(
-      (item) => item.pair,
-    );
+    // const cntPairLists = Object.values(cntFarms[chainIdOrDefault]).map(
+    //   (item) => item.pair,
+    // );
+    // console.log('cnt-farm cntPairList', { cntPairLists, cntFarms });
     const list = stakingPairLists.concat(dualPairLists);
-    return list.concat(cntPairLists);
+    return list;
   }, [chainIdOrDefault, lpFarms, dualFarms]);
 
   useEffect(() => {

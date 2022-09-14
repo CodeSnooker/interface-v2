@@ -12,7 +12,7 @@ export default function Updater(): null {
   const { library } = useActiveWeb3React();
   const dispatch = useDispatch<AppDispatch>();
   const farms = useSelector<AppState, AppState['cntfarms']['byUrl']>(
-    (state) => state.farms.byUrl,
+    (state) => state.cntfarms.byUrl,
   );
 
   const isWindowVisible = useIsWindowVisible();

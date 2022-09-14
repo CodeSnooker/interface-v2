@@ -50,114 +50,116 @@ const initialState: FarmsListsState = {
   selectedListUrl: '',
 };
 
-export default createReducer(initialState, (builder) =>
-  builder
-    .addCase(
-      fetchCntFarmList.pending,
-      (state, { payload: { requestId, url } }) => {
-        state.byUrl[url] = {
-          ...state.byUrl[url],
-          loadingRequestId: requestId,
-          error: null,
-          current: null,
-          pendingUpdate: null,
-        };
-      },
-    )
-    .addCase(
-      fetchCntFarmList.fulfilled,
-      (state, { payload: { requestId, farmList, url } }) => {
-        const current = state.byUrl[url]?.current;
-        const loadingRequestId = state.byUrl[url]?.loadingRequestId;
+export default createReducer(
+  initialState,
+  (builder) =>
+    builder
+      .addCase(
+        fetchCntFarmList.pending,
+        (state, { payload: { requestId, url } }) => {
+          state.byUrl[url] = {
+            ...state.byUrl[url],
+            loadingRequestId: requestId,
+            error: null,
+            current: null,
+            pendingUpdate: null,
+          };
+        },
+      )
+      .addCase(
+        fetchCntFarmList.fulfilled,
+        (state, { payload: { requestId, farmList, url } }) => {
+          const current = state.byUrl[url]?.current;
+          const loadingRequestId = state.byUrl[url]?.loadingRequestId;
 
-        // no-op if update does nothing
-        if (current) {
-          const upgradeType = getVersionUpgrade(
-            current.version,
-            farmList.version,
-          );
-          if (upgradeType === VersionUpgrade.NONE) return;
-          if (loadingRequestId === null || loadingRequestId === requestId) {
+          // no-op if update does nothing
+          if (current) {
+            const upgradeType = getVersionUpgrade(
+              current.version,
+              farmList.version,
+            );
+            if (upgradeType === VersionUpgrade.NONE) return;
+            if (loadingRequestId === null || loadingRequestId === requestId) {
+              state.byUrl[url] = {
+                ...state.byUrl[url],
+                loadingRequestId: null,
+                error: null,
+                current: current,
+                pendingUpdate: farmList,
+              };
+            }
+          } else {
             state.byUrl[url] = {
               ...state.byUrl[url],
               loadingRequestId: null,
               error: null,
-              current: current,
-              pendingUpdate: farmList,
+              current: farmList,
+              pendingUpdate: null,
             };
           }
-        } else {
+        },
+      )
+      .addCase(
+        fetchCntFarmList.rejected,
+        (state, { payload: { url, requestId, errorMessage } }) => {
+          if (state.byUrl[url]?.loadingRequestId !== requestId) {
+            // no-op since it's not the latest request
+            return;
+          }
+
           state.byUrl[url] = {
             ...state.byUrl[url],
             loadingRequestId: null,
-            error: null,
-            current: farmList,
+            error: errorMessage,
+            current: null,
             pendingUpdate: null,
           };
+        },
+      )
+      .addCase(acceptCntFarmUpdate, (state, { payload: url }) => {
+        if (!state.byUrl[url]?.pendingUpdate) {
+          throw new Error('accept list update called without pending update');
         }
-      },
-    )
-    .addCase(
-      fetchCntFarmList.rejected,
-      (state, { payload: { url, requestId, errorMessage } }) => {
-        if (state.byUrl[url]?.loadingRequestId !== requestId) {
-          // no-op since it's not the latest request
-          return;
-        }
-
         state.byUrl[url] = {
           ...state.byUrl[url],
-          loadingRequestId: null,
-          error: errorMessage,
-          current: null,
           pendingUpdate: null,
+          current: state.byUrl[url].pendingUpdate,
         };
-      },
-    )
-    .addCase(acceptCntFarmUpdate, (state, { payload: url }) => {
-      if (!state.byUrl[url]?.pendingUpdate) {
-        throw new Error('accept list update called without pending update');
-      }
-      state.byUrl[url] = {
-        ...state.byUrl[url],
-        pendingUpdate: null,
-        current: state.byUrl[url].pendingUpdate,
-      };
-    })
-    .addCase(updateVersion, (state) => {
-      // state loaded from localStorage, but new lists have never been initialized
-      if (!state.lastInitializedDefaultListOfLists) {
-        state.byUrl = initialState.byUrl;
-        state.selectedListUrl = DEFAULT_CNT_FARMS_LIST_URL;
-      } else if (state.lastInitializedDefaultListOfLists) {
-        const lastInitializedSet = state.lastInitializedDefaultListOfLists.reduce<
-          Set<string>
-        >((s, l) => s.add(l), new Set());
-        const newListOfListsSet = DEFAULT_LIST_OF_LISTS.reduce<Set<string>>(
-          (s, l) => s.add(l),
-          new Set(),
-        );
+      }),
+  // .addCase(updateVersion, (state) => {
+  //   // state loaded from localStorage, but new lists have never been initialized
+  //   if (!state.lastInitializedDefaultListOfLists) {
+  //     state.byUrl = initialState.byUrl;
+  //     state.selectedListUrl = DEFAULT_CNT_FARMS_LIST_URL;
+  //   } else if (state.lastInitializedDefaultListOfLists) {
+  //     const lastInitializedSet = state.lastInitializedDefaultListOfLists.reduce<
+  //       Set<string>
+  //     >((s, l) => s.add(l), new Set());
+  //     const newListOfListsSet = DEFAULT_LIST_OF_LISTS.reduce<Set<string>>(
+  //       (s, l) => s.add(l),
+  //       new Set(),
+  //     );
 
-        DEFAULT_LIST_OF_LISTS.forEach((listUrl) => {
-          if (!lastInitializedSet.has(listUrl)) {
-            state.byUrl[listUrl] = NEW_LIST_STATE;
-          }
-        });
+  //     DEFAULT_LIST_OF_LISTS.forEach((listUrl) => {
+  //       if (!lastInitializedSet.has(listUrl)) {
+  //         state.byUrl[listUrl] = NEW_LIST_STATE;
+  //       }
+  //     });
 
-        state.lastInitializedDefaultListOfLists.forEach((listUrl) => {
-          if (!newListOfListsSet.has(listUrl)) {
-            delete state.byUrl[listUrl];
-          }
-        });
-      }
+  //     state.lastInitializedDefaultListOfLists.forEach((listUrl) => {
+  //       if (!newListOfListsSet.has(listUrl)) {
+  //         delete state.byUrl[listUrl];
+  //       }
+  //     });
+  //   }
 
-      state.lastInitializedDefaultListOfLists = DEFAULT_LIST_OF_LISTS;
+  //   state.lastInitializedDefaultListOfLists = DEFAULT_LIST_OF_LISTS;
 
-      if (!state.selectedListUrl) {
-        state.selectedListUrl = DEFAULT_CNT_FARMS_LIST_URL;
-        if (!state.byUrl[DEFAULT_CNT_FARMS_LIST_URL]) {
-          state.byUrl[DEFAULT_CNT_FARMS_LIST_URL] = NEW_LIST_STATE;
-        }
-      }
-    }),
+  //   if (!state.selectedListUrl) {
+  //     state.selectedListUrl = DEFAULT_CNT_FARMS_LIST_URL;
+  //     if (!state.byUrl[DEFAULT_CNT_FARMS_LIST_URL]) {
+  //       state.byUrl[DEFAULT_CNT_FARMS_LIST_URL] = NEW_LIST_STATE;
+  //     }
+  //   }
+  // }),
 );

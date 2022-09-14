@@ -7,6 +7,7 @@ import {
   useStakingInfo,
   useOldStakingInfo,
   useDualStakingInfo,
+  useCntStakingInfo,
 } from 'state/stake/hooks';
 import { StakingInfo, DualStakingInfo, CommonStakingInfo } from 'types';
 import {
@@ -72,15 +73,18 @@ const FarmsList: React.FC<FarmsListProps> = ({ bulkPairs, farmIndex }) => {
     { search: farmSearch, isStaked: stakedOnly },
   );
 
-  const addedCNTStakingInfos = useStakingInfo(
+  const addedCNTStakingInfos = useCntStakingInfo(
     chainIdOrDefault,
     null,
-    farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX ? 0 : undefined,
-    farmIndex === GlobalConst.farmIndex.OTHER_LPFARM_INDEX ? 0 : undefined,
+    undefined,
+    undefined,
     { search: farmSearch, isStaked: stakedOnly },
   );
 
-  console.log('addedCNTStakingInfos ', { addedCNTStakingInfos, farmIndex });
+  console.log('cnt-farm addedCNTStakingInfos ', {
+    addedCNTStakingInfos,
+    farmIndex,
+  });
   const addedLPStakingOldInfos = useOldStakingInfo(
     chainIdOrDefault,
     null,

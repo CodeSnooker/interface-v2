@@ -2241,7 +2241,7 @@ export async function getAllCntFarms() {
       logoUri: '',
       active: upcommint,
       upcommint,
-      ended: upcommint,
+      closed: [],
     };
   } catch (e) {
     console.log('cnt-farm error', e);

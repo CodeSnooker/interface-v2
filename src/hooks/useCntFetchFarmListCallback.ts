@@ -7,7 +7,7 @@ import { AppDispatch } from 'state';
 import resolveENSContentHash from 'utils/resolveENSContentHash';
 import { useActiveWeb3React } from 'hooks';
 import { fetchFarmList } from 'state/farms/actions';
-import { fetchFarms } from '@cryption/dapp-factory-sdk';
+// import { fetchFarms } from '@cryption/dapp-factory-sdk';
 
 import getFarmList from 'utils/getFarmList';
 import { FarmListInfo } from 'types';
@@ -19,17 +19,17 @@ export function useFetchCntFarmListCallback(): (listUrl: string) => any {
   const dispatch = useDispatch<AppDispatch>();
 
   //TODO: support multi chain
-  // const ensResolver = useCallback(
-  //   (ensName: string) => {
-  //     if (!library) {
-  //       throw new Error('Could not construct mainnet ENS resolver');
-  //     }
-  //     return resolveENSContentHash(ensName, library);
-  //   },
-  //   [library],
-  // );
+  const ensResolver = useCallback(
+    (ensName: string) => {
+      if (!library) {
+        throw new Error('Could not construct mainnet ENS resolver');
+      }
+      return resolveENSContentHash(ensName, library);
+    },
+    [library],
+  );
 
-  // console.log('farm list init hook');
+  console.log('farm list init hook');
 
   return useCallback(
     async (listUrl: string) => {
@@ -45,8 +45,9 @@ export function useFetchCntFarmListCallback(): (listUrl: string) => any {
 
       const fetchPromise = getAllCntFarms();
 
+      // return getFarmList(listUrl, ensResolver)
       return fetchPromise
-        .then((farmList) => {
+        .then((farmList: any) => {
           console.log('cnt-farm  fetched from cnt', farmList);
           dispatch(
             fetchCntFarmList.fulfilled({ url: listUrl, farmList, requestId }),

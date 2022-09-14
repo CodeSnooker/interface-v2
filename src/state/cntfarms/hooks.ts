@@ -128,8 +128,10 @@ export function listToFarmMap(
 
 export function useFarmList(url: string | undefined): StakingInfoAddressMap {
   const farms = useSelector<AppState, AppState['cntfarms']['byUrl']>(
-    (state) => state.farms.byUrl,
+    (state) => state.cntfarms.byUrl,
   );
+
+  console.log('cnt-farms useFarmList', { farms, url });
 
   const tokenMap = useSelectedTokenList();
   const current = url ? farms[url]?.current : null;
@@ -161,16 +163,16 @@ export function useFarmList(url: string | undefined): StakingInfoAddressMap {
           )
       : [];
 
-  console.log('bbb', farmTokenAddresses);
-
   const farmTokens = useTokens(farmTokenAddresses);
+  console.log('cnt-farms useFarmList return ', {
+    current,
+    tokenMap,
+    farmTokens,
+    farmTokenAddresses,
+    condition: farmTokens?.length !== farmTokenAddresses.length,
+  });
   return useMemo(() => {
-    if (
-      !current ||
-      !tokenMap ||
-      farmTokens?.length !== farmTokenAddresses.length
-    )
-      return EMPTY_LIST;
+    if (!current || !tokenMap) return EMPTY_LIST;
     try {
       return listToFarmMap(current, tokenMap, farmTokens ?? []);
     } catch (error) {
@@ -187,7 +189,7 @@ export function useDefaultCntFarmList(): StakingInfoAddressMap {
 // returns all downloaded current lists
 export function useAllFarms(): FarmListInfo[] {
   const farms = useSelector<AppState, AppState['cntfarms']['byUrl']>(
-    (state) => state.farms.byUrl,
+    (state) => state.cntfarms.byUrl,
   );
 
   return useMemo(
