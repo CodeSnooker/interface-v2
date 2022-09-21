@@ -1,22 +1,22 @@
 import { ChainId, JSBI, Percent, Token, WETH } from '@uniswap/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import {
-  injected,
-  walletconnect,
-  walletlink,
-  portis,
-  arkaneconnect,
-  safeApp,
-} from '../connectors';
-import MetamaskIcon from 'assets/images/metamask.png';
-import BlockWalletIcon from 'assets/images/blockwalletIcon.svg';
-import cypherDIcon from 'assets/images/cypherDIcon.png';
 import BitKeepIcon from 'assets/images/bitkeep.png';
+import BlockWalletIcon from 'assets/images/blockwalletIcon.svg';
 import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg';
-import WalletConnectIcon from 'assets/images/walletConnectIcon.svg';
+import cypherDIcon from 'assets/images/cypherDIcon.png';
+import GnosisIcon from 'assets/images/gnosis_safe.png';
+import MetamaskIcon from 'assets/images/metamask.png';
 import PortisIcon from 'assets/images/portisIcon.png';
 import VenlyIcon from 'assets/images/venly.svg';
-import GnosisIcon from 'assets/images/gnosis_safe.png';
+import WalletConnectIcon from 'assets/images/walletConnectIcon.svg';
+import {
+  arkaneconnect,
+  injected,
+  portis,
+  safeApp,
+  walletconnect,
+  walletlink,
+} from '../connectors';
 
 const WETH_ONLY: ChainTokenList = {
   [ChainId.MUMBAI]: [WETH[ChainId.MUMBAI]],
@@ -110,6 +110,7 @@ export const GlobalConst = {
   farmIndex: {
     LPFARM_INDEX: 0,
     DUALFARM_INDEX: 1,
+    OTHER_LP_INDEX: 2,
   },
   walletName: {
     METAMASK: 'Metamask',

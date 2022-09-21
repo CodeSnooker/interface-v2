@@ -1,22 +1,25 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTheme } from '@material-ui/core/styles';
 import { Box, Divider, useMediaQuery } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
 import { Skeleton } from '@material-ui/lab';
-import { ArrowUp, ArrowDown } from 'react-feather';
+import { ChainId } from '@uniswap/sdk';
 import {
-  useStakingInfo,
-  useOldStakingInfo,
-  useDualStakingInfo,
-} from 'state/stake/hooks';
-import { StakingInfo, DualStakingInfo, CommonStakingInfo } from 'types';
-import {
-  FarmCard,
-  ToggleSwitch,
   CustomMenu,
-  SearchInput,
   CustomSwitch,
+  FarmCard,
+  SearchInput,
+  ToggleSwitch,
 } from 'components';
 import { GlobalConst } from 'constants/index';
+import { useActiveWeb3React } from 'hooks';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ArrowDown, ArrowUp } from 'react-feather';
+import { useTranslation } from 'react-i18next';
+import {
+  useDualStakingInfo,
+  useOldStakingInfo,
+  useStakingInfo,
+} from 'state/stake/hooks';
+import { CommonStakingInfo, DualStakingInfo, StakingInfo } from 'types';
 import {
   getAPYWithFee,
   getExactTokenAmount,
@@ -26,9 +29,6 @@ import {
 } from 'utils';
 import useDebouncedChangeHandler from 'utils/useDebouncedChangeHandler';
 import { useInfiniteLoading } from 'utils/useInfiniteLoading';
-import { useTranslation } from 'react-i18next';
-import { useActiveWeb3React } from 'hooks';
-import { ChainId } from '@uniswap/sdk';
 
 const LOADFARM_COUNT = 10;
 const POOL_COLUMN = 1;
@@ -365,11 +365,19 @@ const FarmsList: React.FC<FarmsListProps> = ({ bulkPairs, farmIndex }) => {
     <>
       <Box className='farmListHeader'>
         <Box>
-          <h5>{t('earndQUICK')}</h5>
+          <h5>
+            {t(
+              farmIndex === GlobalConst.farmIndex.OTHER_LP_INDEX
+                ? 'earnRewards'
+                : 'earndQUICK',
+            )}
+          </h5>
           <small>
             {t(
               farmIndex === GlobalConst.farmIndex.LPFARM_INDEX
                 ? 'stakeMessageLP'
+                : farmIndex === GlobalConst.farmIndex.OTHER_LP_INDEX
+                ? 'stakeMessageOtherLP'
                 : 'stakeMessageDual',
             )}
           </small>
