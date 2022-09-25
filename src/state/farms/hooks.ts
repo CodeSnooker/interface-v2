@@ -1,13 +1,12 @@
-import { ChainId } from '@uniswap/sdk';
+import { ChainId, Token } from '@uniswap/sdk';
+import { GlobalValue } from 'constants/index';
+import { useTokens } from 'hooks/Tokens';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AppState } from 'state';
-import { FarmListInfo, StakingRaw, StakingBasic } from 'types';
-import { Token } from '@uniswap/sdk';
 import { TokenAddressMap, useSelectedTokenList } from 'state/lists/hooks';
+import { FarmListInfo, StakingBasic, StakingRaw } from 'types';
 import { getTokenFromAddress } from 'utils';
-import { useTokens } from 'hooks/Tokens';
-import { GlobalValue } from 'constants/index';
 
 export class WrappedStakingInfo implements StakingBasic {
   public readonly stakingInfo: StakingRaw;
@@ -176,6 +175,20 @@ export function useFarmList(url: string | undefined): StakingInfoAddressMap {
       return EMPTY_LIST;
     }
   }, [current, farmTokens, farmTokenAddresses.length, tokenMap]);
+}
+
+export function useOtherFarmList() {
+  const queryString = '';
+  // cntClient
+  //   .query({ query: queryString, fetchPolicy: 'network-only' })
+  //   .then((data) => {
+  //     console.log(data);
+  //   })
+  //   .catch((err) => {
+  //     console.log('Got error => ', err);
+  //   });
+
+  return;
 }
 
 export function useDefaultFarmList(): StakingInfoAddressMap {

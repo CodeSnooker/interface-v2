@@ -38,7 +38,11 @@ const FarmPage: React.FC = () => {
   }, [chainIdOrDefault, lpFarms, dualFarms]);
 
   useEffect(() => {
-    getBulkPairData(pairLists).then((data) => setBulkPairs(data));
+    console.log('Pair Lists => ', pairLists);
+    getBulkPairData(pairLists).then((data) => {
+      setBulkPairs(data);
+      console.log('bulk Pairs => ', data);
+    });
   }, [pairLists]);
 
   const farmCategories = [

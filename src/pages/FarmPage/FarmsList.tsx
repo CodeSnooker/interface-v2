@@ -30,6 +30,8 @@ import {
 import useDebouncedChangeHandler from 'utils/useDebouncedChangeHandler';
 import { useInfiniteLoading } from 'utils/useInfiniteLoading';
 
+import { fetchFarms } from '@cryption/dapp-factory-sdk';
+
 const LOADFARM_COUNT = 10;
 const POOL_COLUMN = 1;
 const TVL_COLUMN = 2;
@@ -57,6 +59,17 @@ const FarmsList: React.FC<FarmsListProps> = ({ bulkPairs, farmIndex }) => {
     farmSearch,
     setFarmSearch,
   );
+
+  useEffect(() => {
+    console.log('We are going to fetch CNT Farms');
+    const getFarms = async () => {
+      const allFarms = await fetchFarms(chainId || 137, 1, [], undefined);
+      if (allFarms.success) {
+        console.log('CNT Farms => ', allFarms);
+      }
+    };
+    getFarms();
+  }, [chainId]);
 
   const chainIdOrDefault = chainId ?? ChainId.MATIC;
 
