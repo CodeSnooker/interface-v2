@@ -24,6 +24,8 @@ export interface FarmListInfo {
   readonly logoURI?: string;
 }
 
+export interface CNTFarmListInfo extends FarmListInfo {}
+
 export interface SyrupListInfo {
   readonly name: string;
   readonly timestamp: string;
@@ -266,3 +268,6 @@ export interface SyrupInfo {
 export interface AnalyticsBasic {
   isV3: boolean;
 }
+
+
+export type OtherStackingInfo = StakingInfo | DualStakingInfo;
