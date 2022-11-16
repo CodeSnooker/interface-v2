@@ -2273,16 +2273,16 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@cryption/dapp-factory-sdk@0.5.24":
-  version "0.5.24"
-  resolved "https://registry.yarnpkg.com/@cryption/dapp-factory-sdk/-/dapp-factory-sdk-0.5.24.tgz#132ad47c079d69239810390dfcf9a8bed671b7f7"
-  integrity sha512-4B+PkjZUtprC3dWMWEsEsQ3sq03jQxXFNu/hAfm3JW4RTMQfeYXw8iDtyIDuEvIgiptdbsqkyIwkdt0i52jvzQ==
+"@cryption/dapp-factory-sdk@0.5.25":
+  version "0.5.25"
+  resolved "https://registry.yarnpkg.com/@cryption/dapp-factory-sdk/-/dapp-factory-sdk-0.5.25.tgz#00a5bff69a0e8f9c5f920d7ad4427a35ff578c01"
+  integrity sha512-eGn43UuW/XreQ93794pgY/fhV4L6LQoBSAu+Wszw44mcks74jy00fZYY07kDTPdPpPWV4/7tgqTUKQ4bCP+R+A==
   dependencies:
     "@apollo/client" "^3.6.8"
     "@emotion/react" "^11.9.0"
     "@emotion/styled" "^11.8.1"
-    "@ethersproject/contracts" "^5.4.1"
-    "@ethersproject/providers" "^5.4.5"
+    "@ethersproject/contracts" "^5.6.2"
+    "@ethersproject/providers" "^5.6.2"
     "@material-ui/core" "^4.12.4"
     "@material-ui/icons" "^4.11.3"
     "@mui/icons-material" "^5.6.0"
@@ -2290,7 +2290,7 @@
     "@reach/dialog" "^0.17.0"
     coingecko-api "^1.0.10"
     cryption-uikit-v2 "0.1.43"
-    ethers "^5.4.7"
+    ethers "^5.6.2"
     graphql "^15.5.0"
     ipfs-http-client "^55.0.0"
     lodash "^4.17.21"
@@ -2825,7 +2825,7 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/transactions" "^5.6.2"
 
-"@ethersproject/contracts@5.7.0", "@ethersproject/contracts@^5.4.1":
+"@ethersproject/contracts@5.7.0", "@ethersproject/contracts@^5.6.2":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/contracts/-/contracts-5.7.0.tgz#c305e775abd07e48aa590e1a877ed5c316f8bd1e"
   integrity sha512-5GJbzEU3X+d33CdfPhcyS+z8MzsTrBGk/sc+G+59+tPa9yFkl6HQ9D6L0QMgNTA9q8dT0XKxxkyp883XsQvbbg==
@@ -3049,7 +3049,7 @@
     bech32 "1.1.4"
     ws "7.4.6"
 
-"@ethersproject/providers@5.7.2", "@ethersproject/providers@^5.4.5":
+"@ethersproject/providers@5.7.2", "@ethersproject/providers@^5.6.2":
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.7.2.tgz#f8b1a4f275d7ce58cf0a2eec222269a08beb18cb"
   integrity sha512-g34EWZ1WWAVgr4aptGlVBF8mhl3VWjv+8hoAnzStu8Ah22VHBsuGzP17eb6xDVRzw895G4W7vvx60lFFur/1Rg==
@@ -11546,7 +11546,7 @@ ethers@^5.2.0, ethers@^5.4.5, ethers@^5.4.6, ethers@^5.6.8:
     "@ethersproject/web" "5.6.1"
     "@ethersproject/wordlists" "5.6.1"
 
-ethers@^5.4.7:
+ethers@^5.6.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
