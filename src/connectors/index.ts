@@ -1,20 +1,19 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { LedgerConnector } from '@web3-react/ledger-connector';
-import { UAuthConnector } from '@uauth/web3-react';
-import { WalletLinkConnector } from './WalletLink';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { PortisConnector } from './Portis';
+import { WalletLinkConnector } from './WalletLink';
 
-import { FortmaticConnector } from './Fortmatic';
 import { ArkaneConnector } from './Arkane';
+import { FortmaticConnector } from './Fortmatic';
+import { MetaMaskConnector } from './MetaMaskConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { SafeAppConnector } from './SafeApp';
 import {
   getTrustWalletInjectedProvider,
   TrustWalletConnector,
 } from './TrustWalletConnector';
-import { MetaMaskConnector } from './MetaMaskConnector';
 
 const POLLING_INTERVAL = 12000;
 
@@ -109,13 +108,15 @@ export const ledger = new LedgerConnector({
   pollingInterval: POLLING_INTERVAL,
 });
 
-export const unstopabbledomains = new UAuthConnector({
-  clientID: process.env.REACT_APP_UNSTOPPABLE_DOMAIN_CLIENT_ID,
-  redirectUri: process.env.REACT_APP_UNSTOPPABLE_DOMAIN_REDIRECT_URI,
+// export const unstopabbledomains = new UAuthConnector({
+//   options: {
+//     // Scope must include openid and wallet
+//     scope: 'openid wallet',
 
-  // Scope must include openid and wallet
-  scope: 'openid wallet',
-
-  // Injected and walletconnect connectors are required.
-  connectors: { injected, walletconnect },
-});
+//     // Injected and walletconnect connectors are required.
+//     connectors: {
+//       injected: ,
+//       walletConnect: walletconnect,
+//     },
+//   },
+// });
