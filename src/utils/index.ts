@@ -1,90 +1,89 @@
 import { getAddress } from '@ethersproject/address';
-import BN from 'bn.js';
+import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
+import {
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  ETHER,
+  JSBI,
+  Pair,
+  Percent,
+  Token,
+  TokenAmount,
+} from '@uniswap/sdk';
+import {
+  Currency as CurrencyV3,
+  CurrencyAmount as CurrencyAmountV3,
+} from '@uniswap/sdk-core';
+import { AbstractConnector } from '@web3-react/abstract-connector';
 import { ApolloClient } from 'apollo-client';
-import { Contract } from '@ethersproject/contracts';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import weekOfYear from 'dayjs/plugin/weekOfYear';
 import {
   blockClient,
   clientV2,
-  txClient,
   clientV3,
   farmingClient,
+  txClient,
 } from 'apollo/client';
 import {
+  ALL_PAIRS,
+  ALL_TOKENS,
+  ETH_PRICE,
+  FILTERED_TRANSACTIONS,
   GET_BLOCK,
-  GLOBAL_DATA,
-  GLOBAL_CHART,
   GET_BLOCKS,
+  GLOBAL_ALLDATA,
+  GLOBAL_CHART,
+  GLOBAL_DATA,
+  HOURLY_PAIR_RATES,
+  IS_PAIR_EXISTS,
+  IS_TOKEN_EXISTS,
+  PAIRS_BULK1,
+  PAIRS_CURRENT,
+  PAIRS_HISTORICAL_BULK,
+  PAIR_CHART,
+  PAIR_DATA,
+  PAIR_ID,
+  PRICES_BY_BLOCK,
+  SWAP_TRANSACTIONS,
   TOKENS_CURRENT,
   TOKENS_DYNAMIC,
   TOKEN_CHART,
   TOKEN_DATA1,
   TOKEN_DATA2,
-  PAIR_CHART,
-  PAIR_DATA,
-  PAIRS_BULK1,
-  PAIRS_HISTORICAL_BULK,
-  PRICES_BY_BLOCK,
-  PAIRS_CURRENT,
-  ALL_PAIRS,
-  ALL_TOKENS,
   TOKEN_INFO,
   TOKEN_INFO_OLD,
-  FILTERED_TRANSACTIONS,
-  SWAP_TRANSACTIONS,
-  HOURLY_PAIR_RATES,
-  GLOBAL_ALLDATA,
-  ETH_PRICE,
-  PAIR_ID,
-  IS_PAIR_EXISTS,
-  IS_TOKEN_EXISTS,
 } from 'apollo/queries';
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
-import {
-  CurrencyAmount,
-  ChainId,
-  Percent,
-  JSBI,
-  Currency,
-  ETHER,
-  Token,
-  TokenAmount,
-  Pair,
-} from '@uniswap/sdk';
-import {
-  CurrencyAmount as CurrencyAmountV3,
-  Currency as CurrencyV3,
-} from '@uniswap/sdk-core';
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { formatUnits } from 'ethers/lib/utils';
-import { AddressZero } from '@ethersproject/constants';
+import { TOKENS_FROM_ADDRESSES_V3 } from 'apollo/queries-v3';
+import BN from 'bn.js';
+import { injected } from 'connectors';
 import { GlobalConst, GlobalValue, SUPPORTED_WALLETS } from 'constants/index';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+import { BigNumber, BigNumberish, constants, Contract } from 'ethers';
+import { formatUnits } from 'ethers/lib/utils';
+import { useEffect, useState } from 'react';
+import { TFunction } from 'react-i18next';
+import { useEthPrice } from 'state/application/hooks';
 import { TokenAddressMap } from 'state/lists/hooks';
+import { CallState } from 'state/multicall/hooks';
 import {
+  DualStakingBasic,
   DualStakingInfo,
   LairInfo,
+  StakingBasic,
   StakingInfo,
   SyrupBasic,
   SyrupInfo,
 } from 'types';
-import { unwrappedToken } from './wrappedCurrency';
-import { useUSDCPriceToken } from './useUSDCPrice';
-import { CallState } from 'state/multicall/hooks';
-import { DualStakingBasic, StakingBasic } from 'types';
-import { AbstractConnector } from '@web3-react/abstract-connector';
-import { injected } from 'connectors';
 import Web3 from 'web3';
 import {
   FETCH_ETERNAL_FARM_FROM_POOL,
   FETCH_POOL_FROM_TOKENS,
 } from './graphql-queries';
-import { useEffect, useState } from 'react';
-import { useEthPrice } from 'state/application/hooks';
+import { useUSDCPriceToken } from './useUSDCPrice';
 import { getGlobalDataV3 } from './v3-graph';
-import { TFunction } from 'react-i18next';
-import { TOKENS_FROM_ADDRESSES_V3 } from 'apollo/queries-v3';
+import { unwrappedToken } from './wrappedCurrency';
 
 dayjs.extend(utc);
 dayjs.extend(weekOfYear);
@@ -830,7 +829,7 @@ export const getTopPairsV2 = async (count: number) => {
       query: PAIRS_CURRENT(count),
       fetchPolicy: 'network-only',
     });
-    const pairsAddresses = topPairIds.data.pairs.map((el: any) => el.id);
+    const pairsAddresses = topPairIds.data.pairs?.map((el: any) => el.id);
 
     const pairsResult = await clientV2.query({
       query: PAIRS_BULK1,
@@ -848,7 +847,7 @@ export const getTopPairsV2 = async (count: number) => {
         : [];
 
     const [oneDayResult, oneWeekResult] = await Promise.all(
-      [oneDayBlock, oneWeekBlock].map(async (block) => {
+      [oneDayBlock, oneWeekBlock]?.map(async (block) => {
         const result = await clientV2.query({
           query: PAIRS_HISTORICAL_BULK(block.number, pairsAddresses),
           fetchPolicy: 'network-only',
@@ -883,7 +882,7 @@ export const getTopPairsV2 = async (count: number) => {
       return { ...obj, [cur.id]: cur };
     }, {});
 
-    const formatted = pairsAddresses.map((address: string) => {
+    const formatted = pairsAddresses?.map((address: string) => {
       const current = pairsCurrentData[address];
       const oneDay = pairsOneDayData[address];
       const oneWeek = pairsOneWeekData[address];
@@ -1350,7 +1349,7 @@ export const getBulkPairData: (
     });
 
     const [oneDayResult, twoDayResult, oneWeekResult] = await Promise.all(
-      [b1, b2, bWeek].map(async (block) => {
+      [b1, b2, bWeek]?.map(async (block) => {
         const result = await clientV2.query({
           query: PAIRS_HISTORICAL_BULK(block, pairList),
           fetchPolicy: 'network-only',
@@ -1382,7 +1381,7 @@ export const getBulkPairData: (
 
     const pairData = await Promise.all(
       current &&
-        current.data.pairs.map(async (pair: any) => {
+        current.data.pairs?.map(async (pair: any) => {
           let data = pair;
           let oneDayHistory = oneDayData?.[pair.id];
           if (!oneDayHistory) {
@@ -1735,7 +1734,7 @@ export const getChartData = async (oldestDateToFetch: number) => {
       });
       skip += 1000;
       data = data.concat(
-        result.data.uniswapDayDatas.map((item: any) => {
+        result.data.uniswapDayDatas?.map((item: any) => {
           return { ...item, dailyVolumeUSD: Number(item.dailyVolumeUSD) };
         }),
       );
@@ -1928,7 +1927,7 @@ export function isTokensOnList(
   defaultTokens: TokenAddressMap,
   currencies: (Currency | undefined)[],
 ): boolean[] {
-  return currencies.map((currency) => {
+  return currencies?.map((currency) => {
     if (currency === ETHER) return true;
     return Boolean(
       currency instanceof Token &&
@@ -2026,7 +2025,7 @@ export function getContract(
   library: Web3Provider,
   account?: string,
 ): Contract {
-  if (!isAddress(address) || address === AddressZero) {
+  if (!isAddress(address) || address === constants.AddressZero) {
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
 
