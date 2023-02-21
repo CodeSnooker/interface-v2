@@ -1,27 +1,26 @@
-import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { useActiveWeb3React } from 'hooks';
-import { AppDispatch } from 'state';
 import { Box } from '@material-ui/core';
-import { clearAllTransactions } from 'state/transactions/actions';
-import { shortenAddress, getEtherscanLink, getWalletKeys } from 'utils';
-import { SUPPORTED_WALLETS } from 'constants/index';
 import { ReactComponent as Close } from 'assets/images/CloseIcon.svg';
+import 'components/styles/AccountDetails.scss';
 import {
   injected,
-  walletlink,
+  metamask,
   safeApp,
   trustconnect,
-  unstopabbledomains,
-  metamask,
+  walletlink,
 } from 'connectors';
+import { SUPPORTED_WALLETS } from 'constants/index';
+import { useActiveWeb3React } from 'hooks';
+import React, { useCallback } from 'react';
 import { ExternalLink as LinkIcon } from 'react-feather';
-import 'components/styles/AccountDetails.scss';
-import StatusIcon from './StatusIcon';
-import Copy from './CopyHelper';
-import Transaction from './Transaction';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from 'state';
 import { useUDDomain } from 'state/application/hooks';
+import { clearAllTransactions } from 'state/transactions/actions';
+import { getEtherscanLink, getWalletKeys, shortenAddress } from 'utils';
+import Copy from './CopyHelper';
+import StatusIcon from './StatusIcon';
+import Transaction from './Transaction';
 
 function renderTransactions(transactions: string[]) {
   return (
@@ -86,11 +85,11 @@ const AccountDetails: React.FC<AccountDetailsProps> = ({
                 <small
                   style={{ cursor: 'pointer', marginRight: 8 }}
                   onClick={() => {
-                    if (connector === unstopabbledomains) {
-                      (connector as any).handleDeactivate();
-                    } else {
-                      (connector as any).close();
-                    }
+                    // if (connector === unstopabbledomains) {
+                    //   (connector as any).handleDeactivate();
+                    // } else {
+                    //   (connector as any).close();
+                    // }
                   }}
                 >
                   {t('disconnect')}

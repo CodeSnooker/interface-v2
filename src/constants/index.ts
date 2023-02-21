@@ -1,29 +1,28 @@
 import { ChainId, JSBI, Percent, Token, WETH } from '@uniswap/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import {
-  injected,
-  walletconnect,
-  walletlink,
-  portis,
-  arkaneconnect,
-  safeApp,
-  trustconnect,
-  unstopabbledomains,
-  metamask,
-} from '../connectors';
-import MetamaskIcon from 'assets/images/metamask.png';
+import BitKeepIcon from 'assets/images/bitkeep.png';
 import BlockWalletIcon from 'assets/images/blockwalletIcon.svg';
 import BraveWalletIcon from 'assets/images/braveWalletIcon.png';
-import cypherDIcon from 'assets/images/cypherDIcon.png';
-import BitKeepIcon from 'assets/images/bitkeep.png';
 import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg';
-import WalletConnectIcon from 'assets/images/walletConnectIcon.svg';
-import PortisIcon from 'assets/images/portisIcon.png';
-import VenlyIcon from 'assets/images/venly.svg';
+import cypherDIcon from 'assets/images/cypherDIcon.png';
 import GnosisIcon from 'assets/images/gnosis_safe.png';
+import MetamaskIcon from 'assets/images/metamask.png';
+import PortisIcon from 'assets/images/portisIcon.png';
 import TrustIcon from 'assets/images/trust.png';
+import VenlyIcon from 'assets/images/venly.svg';
+import WalletConnectIcon from 'assets/images/walletConnectIcon.svg';
 import { Presets } from 'state/mint/v3/reducer';
-import UnstoppableDomainsIcon from 'assets/images/unstoppableDomains.png';
+import {
+  arkaneconnect,
+  injected,
+  // unstopabbledomains,
+  metamask,
+  portis,
+  safeApp,
+  trustconnect,
+  walletconnect,
+  walletlink,
+} from '../connectors';
 
 const WETH_ONLY: ChainTokenList = {
   [ChainId.MUMBAI]: [WETH[ChainId.MUMBAI]],
@@ -666,14 +665,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#4196FC',
     mobile: true,
   },
-  UNSTOPABBLEDOMAINS: {
-    connector: unstopabbledomains,
-    name: 'Unstoppable Domains',
-    iconName: UnstoppableDomainsIcon,
-    description: 'Unstoppable Domains',
-    href: null,
-    color: '#E8831D',
-  },
+  // UNSTOPABBLEDOMAINS: {
+  //   connector: unstopabbledomains,
+  //   name: 'Unstoppable Domains',
+  //   iconName: UnstoppableDomainsIcon,
+  //   description: 'Unstoppable Domains',
+  //   href: null,
+  //   color: '#E8831D',
+  // },
   ARKANE_CONNECT: {
     connector: arkaneconnect,
     name: GlobalConst.walletName.ARKANE_CONNECT,
